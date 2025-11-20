@@ -58,12 +58,13 @@ leme/
 ├── modulos.py         # Módulo para gerenciamento de módulos de conteúdo
 ├── progressos.py      # Módulo para gerenciamento do progresso dos usuários
 ├── utilitarios.py     # Funções auxiliares (validações, IDs, etc.)
-├── pyproject.toml     # Arquivo de configuração do projeto
 └── README.md          # Este arquivo
 ```
 
 ## 👨‍💻 Autores
-Nome	                                  RM
-Felipe Ferrete Lemes	                  RM562999
-Gustavo Bosak Santos	                  RM566315
-Nikolas Henrique de Souza Lemes Brisola	RM564371
+
+| Nome                                  | RM       |
+| ------------------------------------- | -------- |
+| Felipe Ferrete Lemes                  | RM562999 |
+| Gustavo Bosak Santos                  | RM566315 |
+| Nikolas Henrique de Souza Lemes Brisola | RM564371 |
