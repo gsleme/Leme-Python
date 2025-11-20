@@ -1,0 +1,24 @@
+# 🐍 Cache do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 🧠 Ambiente virtual
+venv/
+env/
+.venv/
+.env/
+
+# 💻 Configurações de IDE
+.idea/
+.vscode/
+*.swp
+
+# 🧪 Arquivos temporários
+.DS_Store
+*.log
+*.tmp
+
+# 🧾 Arquivos gerados automaticamente
+*.json
