@@ -31,17 +31,35 @@ def getConnection():
 
 
 # --- Valida Números Inteiros ---
-def validar_inteiro(entrada: str) -> int:
+def validar_inteiro(entrada: str, default=None) -> int:
     """
     Solicita um valor e garante que é um número inteiro, repetindo até ser válido.
     """
     while True:
+        valor_input = input(entrada)
+        if not valor_input and default is not None:
+            return default
         try:
-            # Solicita a entrada dentro do loop
-            valor = int(input(entrada))
+            valor = int(valor_input)
             return valor
         except ValueError:
             print(f"Entrada inválida. Por favor, digite um número inteiro.")
+
+# --- Valida Números de Ponto Flutuante ---
+def validar_float(entrada: str, default=None) -> float:
+    """
+    Solicita um valor e garante que é um número de ponto flutuante, repetindo até ser válido.
+    """
+    while True:
+        valor_input = input(entrada)
+        if not valor_input and default is not None:
+            return default
+        try:
+            valor = float(valor_input)
+            return valor
+        except ValueError:
+            print(f"Entrada inválida. Por favor, digite um número de ponto flutuante.")
+
 
 # --- Valida Data e Hora (a partir de hoje) ---
 def validar_data(mensagem: str) -> datetime:
@@ -52,6 +70,8 @@ def validar_data(mensagem: str) -> datetime:
     formato = "%d/%m/%Y %H:%M"
     while True:
         entrada = input(mensagem) # Solicita a entrada dentro do loop
+        if not entrada:
+            return datetime.now()
         try:
             data = datetime.strptime(entrada, formato)
             
@@ -106,30 +126,29 @@ def validar_email(mensagem: str) -> str:
         else:
             print("Operação cancelada. Digite um e-mail válido (ex: nome@dominio.com).")
 
-def validar_string(mensagem: str, minimo: int = 1, maximo: int = 100) -> str:
+def validar_string(mensagem: str, minimo: int = 1, maximo: int = 100, default=None) -> str:
     """
     Solicita uma string ao usuário e garante que ela não está vazia e está dentro
     de um comprimento mínimo e máximo. Repete até ser válida.
     """
     while True:
         entrada = input(mensagem)
-        # 1. Remove espaços em branco do início e fim
+        if not entrada and default is not None:
+            return default
+        
         string_tratada = entrada.strip()
 
         tamanho = len(string_tratada)
 
-        # 2. Verifica se está vazia ou contém apenas espaços
         if not string_tratada:
             print("Entrada inválida. O campo não pode ficar vazio.")
-            continue # Volta para o início do loop
+            continue
 
-        # 3. Verifica o comprimento
         if tamanho < minimo:
             print(f"Entrada inválida. O valor deve ter pelo menos {minimo} caracteres.")
         elif tamanho > maximo:
             print(f"Entrada inválida. O valor deve ter no máximo {maximo} caracteres.")
 
-        # 4. Se passar por todas as verificações, retorna
         else:
             return string_tratada
 
