@@ -3,25 +3,26 @@ from datetime import datetime
 import regex
 import re
 import uuid
-
-
+import os  # Importando a biblioteca os
 
 '''
 Lembrar de pip install regex
 pip install oracledb
 '''
 
-#dominio = "oracle.fiap.com.br:1521/orcl"
-""
-#criar (obter) uma conexão com o banco de dados Oracle (FIAP)
+# criar (obter) uma conexão com o banco de dados Oracle (FIAP)
 def getConnection():
+    """
+    Obtém uma conexão com o banco de dados Oracle usando credenciais
+    das variáveis de ambiente.
+    """
     try:
         conn = oracledb.connect(
-            user = "RM562999",
-            password = "081105",
-            host = "oracle.fiap.com.br",
-            port = "1521",
-            service_name = "orcl"
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            host=os.getenv("DB_HOST"),
+            port=os.getenv("DB_PORT", "1521"),  # Usa 1521 como porta padrão
+            service_name=os.getenv("DB_SERVICE_NAME")
         )
         print('Conexão com Oracle DB realizada!')
         return conn
@@ -157,7 +158,6 @@ def validar_id():
     Gera um ID único no formato UUID4.
     """
     return str(uuid.uuid4())
-
 
 def validar_sim_nao(mensagem: str) -> str:
     """
