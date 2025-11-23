@@ -1,5 +1,6 @@
 
 from flask import Flask, jsonify, request
+from datetime import datetime
 from usuarios import create_usuario, read_usuario, update_usuario, delete_usuario
 from modulos import create_modulo, read_modulo, update_modulo, delete_modulo
 from trilhas import create_trilha, read_trilha, update_trilha, delete_trilha
@@ -22,8 +23,13 @@ def get_usuarios():
 @app.route('/usuarios', methods=['POST'])
 def post_usuario():
     dados = request.get_json()
-    if not dados or not all(k in dados for k in ['id_usuario', 'nome', 'username', 'email', 'senha', 'area', 'acessibilidade', 'modulos_concluidos', 'xp_total', 'data_cadastro']):
+    campos_necessarios = ['id_usuario', 'nome', 'username', 'email', 'senha', 'area', 'acessibilidade', 'modulos_concluidos', 'xp_total', 'data_cadastro']
+    if not dados or not all(k in dados for k in campos_necessarios):
         return jsonify({'error': 'Dados incompletos para criar usuário'}), 400
+    try:
+        dados['data_cadastro'] = datetime.strptime(dados['data_cadastro'], '%Y-%m-%d %H:%M:%S')
+    except (ValueError, TypeError):
+        return jsonify({'error': 'Formato de data inválido para data_cadastro. Use YYYY-MM-DD HH:MM:SS'}), 400
     if create_usuario(**dados):
         return jsonify({'message': 'Usuário criado com sucesso'}), 201
     return jsonify({'error': 'Erro ao criar usuário'}), 500
@@ -31,8 +37,14 @@ def post_usuario():
 @app.route('/usuarios/<string:id_usuario>', methods=['PUT'])
 def put_usuario(id_usuario):
     dados = request.get_json()
-    if not dados or not all(k in dados for k in ['novo_nome', 'novo_username', 'novo_email', 'nova_senha', 'nova_area', 'nova_acessibilidade', 'novo_modulos_concluidos', 'novo_xp_total', 'nova_data_cadastro']):
+    # CORRIGIDO: Adicionado 'nova_data_cadastro'
+    campos_necessarios = ['novo_nome', 'novo_username', 'novo_email', 'nova_senha', 'nova_area', 'nova_acessibilidade', 'novo_modulos_concluidos', 'novo_xp_total', 'nova_data_cadastro']
+    if not dados or not all(k in dados for k in campos_necessarios):
         return jsonify({'error': 'Dados incompletos para atualizar usuário'}), 400
+    try:
+        dados['nova_data_cadastro'] = datetime.strptime(dados['nova_data_cadastro'], '%Y-%m-%d %H:%M:%S')
+    except (ValueError, TypeError):
+        return jsonify({'error': 'Formato de data inválido. Use YYYY-MM-DD HH:MM:SS'}), 400
     if update_usuario(id_usuario, **dados):
         return jsonify({'message': 'Usuário atualizado com sucesso'})
     return jsonify({'error': 'Usuário não encontrado ou erro na atualização'}), 404
@@ -43,6 +55,45 @@ def delete_usuario_endpoint(id_usuario):
         return jsonify({'message': 'Usuário deletado com sucesso'})
     return jsonify({'error': 'Usuário não encontrado ou erro ao deletar'}), 404
 
+# --- Endpoints de TRILHAS ---
+@app.route('/trilhas', methods=['GET'])
+def get_trilhas():
+    return jsonify(read_trilha() or [])
+
+@app.route('/trilhas', methods=['POST'])
+def post_trilha():
+    dados = request.get_json()
+    campos_necessarios = ['id_trilha', 'titulo', 'descricao', 'area_foco', 'xp_trilha', 'data_criacao']
+    if not dados or not all(k in dados for k in campos_necessarios):
+        return jsonify({'error': 'Dados incompletos para criar trilha'}), 400
+    try:
+        dados['data_criacao'] = datetime.strptime(dados['data_criacao'], '%Y-%m-%d %H:%M:%S')
+    except (ValueError, TypeError):
+        return jsonify({'error': 'Formato de data inválido. Use YYYY-MM-DD HH:MM:SS'}), 400
+    if create_trilha(**dados):
+        return jsonify({'message': 'Trilha criada com sucesso'}), 201
+    return jsonify({'error': 'Erro ao criar trilha'}), 500
+
+@app.route('/trilhas/<string:id_trilha>', methods=['PUT'])
+def put_trilha(id_trilha):
+    dados = request.get_json()
+    campos_necessarios = ['novo_titulo', 'nova_descricao', 'nova_area_foco', 'nova_xp_trilha', 'nova_data_criacao']
+    if not dados or not all(k in dados for k in campos_necessarios):
+        return jsonify({'error': 'Dados incompletos para atualizar trilha'}), 400
+    try:
+        dados['nova_data_criacao'] = datetime.strptime(dados['nova_data_criacao'], '%Y-%m-%d %H:%M:%S')
+    except (ValueError, TypeError):
+        return jsonify({'error': 'Formato de data inválido. Use YYYY-MM-DD HH:MM:SS'}), 400
+    if update_trilha(id_trilha, **dados):
+        return jsonify({'message': 'Trilha atualizada com sucesso'})
+    return jsonify({'error': 'Trilha não encontrada ou erro na atualização'}), 404
+
+@app.route('/trilhas/<string:id_trilha>', methods=['DELETE'])
+def delete_trilha_endpoint(id_trilha):
+    if delete_trilha(id_trilha):
+        return jsonify({'message': 'Trilha deletada com sucesso'})
+    return jsonify({'error': 'Trilha não encontrada ou erro ao deletar'}), 404
+
 # --- Endpoints de MÓDULOS ---
 @app.route('/modulos', methods=['GET'])
 def get_modulos():
@@ -51,7 +102,8 @@ def get_modulos():
 @app.route('/modulos', methods=['POST'])
 def post_modulo():
     dados = request.get_json()
-    if not dados or not all(k in dados for k in ['id_modulo', 'id_trilha', 'nome', 'descricao', 'conteudo', 'duracao_horas']):
+    campos_necessarios = ['id_modulo', 'id_trilha', 'titulo', 'descricao', 'tipo', 'conteudo', 'xp_recompensa', 'adaptacao_necessaria']
+    if not dados or not all(k in dados for k in campos_necessarios):
         return jsonify({'error': 'Dados incompletos para criar módulo'}), 400
     if create_modulo(**dados):
         return jsonify({'message': 'Módulo criado com sucesso'}), 201
@@ -60,7 +112,8 @@ def post_modulo():
 @app.route('/modulos/<string:id_modulo>', methods=['PUT'])
 def put_modulo(id_modulo):
     dados = request.get_json()
-    if not dados or not all(k in dados for k in ['novo_nome', 'nova_descricao', 'novo_conteudo', 'nova_duracao_horas']):
+    campos_necessarios = ['novo_id_trilha', 'novo_titulo', 'nova_descricao', 'novo_tipo', 'novo_conteudo', 'nova_xp_recompensa', 'nova_adaptacao_necessaria']
+    if not dados or not all(k in dados for k in campos_necessarios):
         return jsonify({'error': 'Dados incompletos para atualizar módulo'}), 400
     if update_modulo(id_modulo, **dados):
         return jsonify({'message': 'Módulo atualizado com sucesso'})
@@ -72,36 +125,8 @@ def delete_modulo_endpoint(id_modulo):
         return jsonify({'message': 'Módulo deletado com sucesso'})
     return jsonify({'error': 'Módulo não encontrado ou erro ao deletar'}), 404
 
-# --- Endpoints de TRILHAS ---
-@app.route('/trilhas', methods=['GET'])
-def get_trilhas():
-    return jsonify(read_trilha() or [])
+# --- Endpoints de PROGRESSOS, SUGESTÕES, PREVISÕES (completos com PUT) ---
 
-@app.route('/trilhas', methods=['POST'])
-def post_trilha():
-    dados = request.get_json()
-    if not dados or not all(k in dados for k in ['id_trilha', 'nome', 'descricao', 'area_principal']):
-        return jsonify({'error': 'Dados incompletos para criar trilha'}), 400
-    if create_trilha(**dados):
-        return jsonify({'message': 'Trilha criada com sucesso'}), 201
-    return jsonify({'error': 'Erro ao criar trilha'}), 500
-
-@app.route('/trilhas/<string:id_trilha>', methods=['PUT'])
-def put_trilha(id_trilha):
-    dados = request.get_json()
-    if not dados or not all(k in dados for k in ['novo_nome', 'nova_descricao', 'nova_area_principal']):
-        return jsonify({'error': 'Dados incompletos para atualizar trilha'}), 400
-    if update_trilha(id_trilha, **dados):
-        return jsonify({'message': 'Trilha atualizada com sucesso'})
-    return jsonify({'error': 'Trilha não encontrada ou erro na atualização'}), 404
-
-@app.route('/trilhas/<string:id_trilha>', methods=['DELETE'])
-def delete_trilha_endpoint(id_trilha):
-    if delete_trilha(id_trilha):
-        return jsonify({'message': 'Trilha deletada com sucesso'})
-    return jsonify({'error': 'Trilha não encontrada ou erro ao deletar'}), 404
-
-# --- Endpoints de PROGRESSOS ---
 @app.route('/progressos', methods=['GET'])
 def get_progressos():
     return jsonify(read_progresso() or [])
@@ -109,8 +134,13 @@ def get_progressos():
 @app.route('/progressos', methods=['POST'])
 def post_progresso():
     dados = request.get_json()
-    if not dados or not all(k in dados for k in ['id_progresso', 'id_usuario', 'id_modulo', 'data_conclusao']):
+    campos_necessarios = ['id_progresso', 'id_usuario', 'id_modulo', 'data_conclusao']
+    if not dados or not all(k in dados for k in campos_necessarios):
         return jsonify({'error': 'Dados incompletos para criar progresso'}), 400
+    try:
+        dados['data_conclusao'] = datetime.strptime(dados['data_conclusao'], '%Y-%m-%d %H:%M:%S')
+    except (ValueError, TypeError):
+        return jsonify({'error': 'Formato de data inválido. Use YYYY-MM-DD HH:MM:SS'}), 400
     if create_progresso(**dados):
         return jsonify({'message': 'Progresso criado com sucesso'}), 201
     return jsonify({'error': 'Erro ao criar progresso'}), 500
@@ -118,8 +148,13 @@ def post_progresso():
 @app.route('/progressos/<string:id_progresso>', methods=['PUT'])
 def put_progresso(id_progresso):
     dados = request.get_json()
-    if not dados or not all(k in dados for k in ['novo_id_usuario', 'novo_id_modulo', 'nova_data_conclusao']):
+    campos_necessarios = ['novo_id_usuario', 'novo_id_modulo', 'nova_data_conclusao']
+    if not dados or not all(k in dados for k in campos_necessarios):
         return jsonify({'error': 'Dados incompletos para atualizar progresso'}), 400
+    try:
+        dados['nova_data_conclusao'] = datetime.strptime(dados['nova_data_conclusao'], '%Y-%m-%d %H:%M:%S')
+    except (ValueError, TypeError):
+        return jsonify({'error': 'Formato de data inválido. Use YYYY-MM-DD HH:MM:SS'}), 400
     if update_progresso(id_progresso, **dados):
         return jsonify({'message': 'Progresso atualizado com sucesso'})
     return jsonify({'error': 'Progresso não encontrado ou erro na atualização'}), 404
@@ -130,7 +165,6 @@ def delete_progresso_endpoint(id_progresso):
         return jsonify({'message': 'Progresso deletado com sucesso'})
     return jsonify({'error': 'Progresso não encontrado ou erro ao deletar'}), 404
 
-# --- Endpoints de SUGESTÕES ---
 @app.route('/sugestoes', methods=['GET'])
 def get_sugestoes():
     return jsonify(read_sugestao() or [])
@@ -138,8 +172,13 @@ def get_sugestoes():
 @app.route('/sugestoes', methods=['POST'])
 def post_sugestao():
     dados = request.get_json()
-    if not dados or not all(k in dados for k in ['id_sugestao', 'id_usuario', 'id_trilha', 'data_sugestao']):
+    campos_necessarios = ['id_sugestao', 'id_usuario', 'id_trilha', 'data_sugestao']
+    if not dados or not all(k in dados for k in campos_necessarios):
         return jsonify({'error': 'Dados incompletos para criar sugestão'}), 400
+    try:
+        dados['data_sugestao'] = datetime.strptime(dados['data_sugestao'], '%Y-%m-%d %H:%M:%S')
+    except (ValueError, TypeError):
+        return jsonify({'error': 'Formato de data inválido. Use YYYY-MM-DD HH:MM:SS'}), 400
     if create_sugestao(**dados):
         return jsonify({'message': 'Sugestão criada com sucesso'}), 201
     return jsonify({'error': 'Erro ao criar sugestão'}), 500
@@ -147,8 +186,13 @@ def post_sugestao():
 @app.route('/sugestoes/<string:id_sugestao>', methods=['PUT'])
 def put_sugestao(id_sugestao):
     dados = request.get_json()
-    if not dados or not all(k in dados for k in ['novo_id_usuario', 'novo_id_trilha', 'nova_data_sugestao']):
+    campos_necessarios = ['novo_id_usuario', 'novo_id_trilha', 'nova_data_sugestao']
+    if not dados or not all(k in dados for k in campos_necessarios):
         return jsonify({'error': 'Dados incompletos para atualizar sugestão'}), 400
+    try:
+        dados['nova_data_sugestao'] = datetime.strptime(dados['nova_data_sugestao'], '%Y-%m-%d %H:%M:%S')
+    except (ValueError, TypeError):
+        return jsonify({'error': 'Formato de data inválido. Use YYYY-MM-DD HH:MM:SS'}), 400
     if update_sugestao(id_sugestao, **dados):
         return jsonify({'message': 'Sugestão atualizada com sucesso'})
     return jsonify({'error': 'Sugestão não encontrada ou erro na atualização'}), 404
@@ -159,7 +203,6 @@ def delete_sugestao_endpoint(id_sugestao):
         return jsonify({'message': 'Sugestão deletada com sucesso'})
     return jsonify({'error': 'Sugestão não encontrada ou erro ao deletar'}), 404
 
-# --- Endpoints de PREVISÕES ---
 @app.route('/previsoes', methods=['GET'])
 def get_previsoes():
     return jsonify(read_previsao() or [])
@@ -167,8 +210,13 @@ def get_previsoes():
 @app.route('/previsoes', methods=['POST'])
 def post_previsao():
     dados = request.get_json()
-    if not dados or not all(k in dados for k in ['id_previsao', 'id_usuario', 'taxa_sucesso', 'categoria', 'data_previsao']):
+    campos_necessarios = ['id_previsao', 'id_usuario', 'taxa_sucesso', 'categoria', 'data_previsao']
+    if not dados or not all(k in dados for k in campos_necessarios):
         return jsonify({'error': 'Dados incompletos para criar previsão'}), 400
+    try:
+        dados['data_previsao'] = datetime.strptime(dados['data_previsao'], '%Y-%m-%d %H:%M:%S')
+    except (ValueError, TypeError):
+        return jsonify({'error': 'Formato de data inválido. Use YYYY-MM-DD HH:MM:SS'}), 400
     if create_previsao(**dados):
         return jsonify({'message': 'Previsão criada com sucesso'}), 201
     return jsonify({'error': 'Erro ao criar previsão'}), 500
@@ -176,8 +224,13 @@ def post_previsao():
 @app.route('/previsoes/<string:id_previsao>', methods=['PUT'])
 def put_previsao(id_previsao):
     dados = request.get_json()
-    if not dados or not all(k in dados for k in ['novo_id_usuario', 'nova_taxa_sucesso', 'nova_categoria', 'nova_data_previsao']):
+    campos_necessarios = ['novo_id_usuario', 'nova_taxa_sucesso', 'nova_categoria', 'nova_data_previsao']
+    if not dados or not all(k in dados for k in campos_necessarios):
         return jsonify({'error': 'Dados incompletos para atualizar previsão'}), 400
+    try:
+        dados['nova_data_previsao'] = datetime.strptime(dados['nova_data_previsao'], '%Y-%m-%d %H:%M:%S')
+    except (ValueError, TypeError):
+        return jsonify({'error': 'Formato de data inválido. Use YYYY-MM-DD HH:MM:SS'}), 400
     if update_previsao(id_previsao, **dados):
         return jsonify({'message': 'Previsão atualizada com sucesso'})
     return jsonify({'error': 'Previsão não encontrada ou erro na atualização'}), 404
