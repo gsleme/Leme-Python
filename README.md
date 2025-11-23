@@ -48,15 +48,45 @@ python main.py
 
 4. Navegue pelos menus para acessar as funcionalidades desejadas.
 
+## API de Usuários
+
+Esta é uma API para gerenciar usuários, módulos, trilhas, previsões, progressos e sugestões.
+
+### Como executar
+
+1. Instale as dependências:
+
+   ```bash
+   pip install Flask oracledb
+   ```
+
+2. Execute o servidor:
+
+   ```bash
+   python api.py
+   ```
+
+### Endpoints
+
+- `GET /usuarios`: Retorna uma lista de todos os usuários.
+- `GET /modulos`: Retorna uma lista de todos os módulos.
+- `GET /trilhas`: Retorna uma lista de todas as trilhas.
+- `GET /previsoes`: Retorna uma lista de todas as previsões.
+- `GET /progressos`: Retorna uma lista de todos os progressos.
+- `GET /sugestoes`: Retorna uma lista de todas as sugestões.
+
 ## 📂 Estrutura do Projeto
 
 ```
 leme/
 ├── main.py            # Ponto de entrada da aplicação e menu principal
+├── api.py             # API Flask para interação com o front-end
 ├── usuarios.py        # Módulo para gerenciamento de usuários
 ├── trilhas.py         # Módulo para gerenciamento de trilhas de aprendizado
 ├── modulos.py         # Módulo para gerenciamento de módulos de conteúdo
 ├── progressos.py      # Módulo para gerenciamento do progresso dos usuários
+├── previsoes.py       # Módulo para gerenciamento de previsões
+├── sugestoes.py       # Módulo para gerenciamento de sugestões
 ├── utilitarios.py     # Funções auxiliares (validações, IDs, etc.)
 └── README.md          # Este arquivo
 ```
