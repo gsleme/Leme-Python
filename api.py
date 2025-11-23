@@ -1,8 +1,8 @@
 
 from flask import Flask, jsonify, request
 from usuarios import create_usuario, read_usuario, update_usuario, delete_usuario
-from modulos import create_modulo, read_modulos, update_modulo, delete_modulo
-from trilhas import create_trilha, read_trilhas, update_trilha, delete_trilha
+from modulos import create_modulo, read_modulo, update_modulo, delete_modulo
+from trilhas import create_trilha, read_trilha, update_trilha, delete_trilha
 from previsoes import create_previsao, read_previsao, update_previsao, delete_previsao
 from progressos import create_progresso, read_progresso, update_progresso, delete_progresso
 from sugestoes import create_sugestao, read_sugestao, update_sugestao, delete_sugestao
@@ -46,7 +46,7 @@ def delete_usuario_endpoint(id_usuario):
 # --- Endpoints de MÓDULOS ---
 @app.route('/modulos', methods=['GET'])
 def get_modulos():
-    return jsonify(read_modulos() or [])
+    return jsonify(read_modulo() or [])
 
 @app.route('/modulos', methods=['POST'])
 def post_modulo():
@@ -75,7 +75,7 @@ def delete_modulo_endpoint(id_modulo):
 # --- Endpoints de TRILHAS ---
 @app.route('/trilhas', methods=['GET'])
 def get_trilhas():
-    return jsonify(read_trilhas() or [])
+    return jsonify(read_trilha() or [])
 
 @app.route('/trilhas', methods=['POST'])
 def post_trilha():
@@ -188,3 +188,5 @@ def delete_previsao_endpoint(id_previsao):
         return jsonify({'message': 'Previsão deletada com sucesso'})
     return jsonify({'error': 'Previsão não encontrada ou erro ao deletar'}), 404
 
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080, debug=True)
