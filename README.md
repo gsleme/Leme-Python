@@ -1,95 +1,88 @@
-# Leme - Plataforma de Reskilling
+# Leme: Plataforma de Reskilling e API
 
-## 📝 Descrição
+Este projeto é a Plataforma de Reskilling "Leme". Ele oferece funcionalidades completas de **CRUD (Create, Read, Update, Delete) e exportação para json** para gerenciar seus recursos através de dois componentes principais: uma **API RESTful** e uma **Interface de Linha de Comando (CLI)** interativa.
 
-Este projeto implementa um sistema de back-end em Python, no formato de uma aplicação de console (CLI), para gerenciar as operações de uma plataforma de reskilling voltada para empresas. O sistema é modular e foi desenhado para ser a camada de dados de uma aplicação maior, permitindo o controle total sobre as entidades principais do negócio.
+## Estrutura do Projeto
 
-O nome "Leme" simboliza a direção e o controle que a plataforma oferece às empresas para guiar o desenvolvimento de seus colaboradores.
+O projeto está organizado da seguinte forma:
 
-## ✨ Funcionalidades Principais
+```
+/
+|-- api.py                  # Ponto de entrada da API Flask, define todos os endpoints.
+|-- main.py                 # Interface de Linha de Comando (CLI) com menus para CRUD.
+|-- test_api.py             # Suíte de testes de integração para validar os endpoints da API.
+|-- requirements.txt        # Lista de dependências do Python.
+|-- README.md               # Este arquivo.
+|
+|-- usuarios.py             # Lógica de CRUD para a tabela de usuários.
+|-- trilhas.py              # Lógica de CRUD para a tabela de trilhas.
+|-- modulos.py              # Lógica de CRUD para a tabela de módulos.
+|-- progressos.py           # Lógica de CRUD para a tabela de progressos.
+|-- sugestoes.py            # Lógica de CRUD para a tabela de sugestões.
+|-- previsoes.py            # Lógica de CRUD para a tabela de previsões.
+|
+`-- utilitarios.py          # Funções utilitárias.
+```
 
-O sistema oferece um gerenciamento completo (CRUD - Criar, Ler, Atualizar, Deletar) para os seguintes módulos:
+## Tecnologias
 
-- **Gerenciamento de Usuários:**
-  - Cadastrar, listar, atualizar e remover colaboradores da plataforma.
+*   **Python 3:** Linguagem de programação principal.
+*   **Flask:** Microframework web para a criação da API.
+*   **Requests:** Biblioteca para realizar as chamadas HTTP nos testes.
 
-- **Gerenciamento de Trilhas de Aprendizado:**
-  - Criar, visualizar, modificar e excluir trilhas de aprendizado, que são conjuntos de módulos.
+## Instalação
 
-- **Gerenciamento de Módulos:**
-  - Adicionar, consultar, editar e excluir módulos de conteúdo, como cursos e workshops.
+1.  **Clone o repositório:**
+    ```bash
+    git clone <URL_DO_SEU_REPOSITORIO>
+    cd Leme-Python
+    ```
 
-- **Gerenciamento de Progresso:**
-  - Registrar e acompanhar o progresso dos usuários nas trilhas e módulos.
+2.  **Crie e ative um ambiente virtual (recomendado):**
+    ```bash
+    python -m venv venv
+    # Windows
+    .\venv\Scripts\activate
+    # macOS/Linux
+    source venv/bin/activate
+    ```
 
-- **Menus Interativos:**
-  - Uma interface de linha de comando (CLI) que guia o administrador de forma intuitiva através de todas as operações disponíveis.
+3.  **Instale as dependências:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-## 🛠️ Tecnologias Utilizadas
+## Como Usar
 
-- **Linguagem:** Python 3
-- **Bibliotecas:** Funções nativas do Python, sem dependências externas.
+O projeto pode ser executado de duas formas:
 
-## 🚀 Como Executar o Projeto
+### 1. Executando a API RESTful
 
-**Pré-requisitos:**
+Para iniciar o servidor da API, que oferece endpoints para operações de CRUD em todos os recursos, execute:
 
-- Ter o Python 3 instalado em seu ambiente.
+```bash
+python api.py
+```
 
-**Execução:**
+O servidor estará em execução no endereço `http://127.0.0.1:8080`.
 
-1. Clone ou faça o download deste repositório.
-2. Navegue até a pasta raiz do projeto.
-3. Para iniciar o sistema, execute o arquivo `main.py` no seu terminal:
+### 2. Executando a Interface de Linha de Comando (CLI)
+
+Para usar a aplicação via terminal, que oferece um menu para realizar operações de CRUD (Criar, Ler, Atualizar, Deletar) em todos os recursos, execute:
 
 ```bash
 python main.py
 ```
 
-4. Navegue pelos menus para acessar as funcionalidades desejadas.
+### Validando a API com Testes
 
-## API de Usuários
+Para garantir que todos os endpoints da API estão funcionando corretamente, execute a suíte de testes:
 
-Esta é uma API para gerenciar usuários, módulos, trilhas, previsões, progressos e sugestões.
-
-### Como executar
-
-1. Instale as dependências:
-
-   ```bash
-   pip install Flask oracledb
-   ```
-
-2. Execute o servidor:
-
-   ```bash
-   python api.py
-   ```
-
-### Endpoints
-
-- `GET /usuarios`: Retorna uma lista de todos os usuários.
-- `GET /modulos`: Retorna uma lista de todos os módulos.
-- `GET /trilhas`: Retorna uma lista de todas as trilhas.
-- `GET /previsoes`: Retorna uma lista de todas as previsões.
-- `GET /progressos`: Retorna uma lista de todos os progressos.
-- `GET /sugestoes`: Retorna uma lista de todas as sugestões.
-
-## 📂 Estrutura do Projeto
-
+```bash
+python test_api.py
 ```
-leme/
-├── main.py            # Ponto de entrada da aplicação e menu principal
-├── api.py             # API Flask para interação com o front-end
-├── usuarios.py        # Módulo para gerenciamento de usuários
-├── trilhas.py         # Módulo para gerenciamento de trilhas de aprendizado
-├── modulos.py         # Módulo para gerenciamento de módulos de conteúdo
-├── progressos.py      # Módulo para gerenciamento do progresso dos usuários
-├── previsoes.py       # Módulo para gerenciamento de previsões
-├── sugestoes.py       # Módulo para gerenciamento de sugestões
-├── utilitarios.py     # Funções auxiliares (validações, IDs, etc.)
-└── README.md          # Este arquivo
-```
+
+Você deverá ver uma saída indicando que todos os testes passaram (`OK`).
 
 ## 👨‍💻 Autores
 
