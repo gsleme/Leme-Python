@@ -3,27 +3,36 @@ from datetime import datetime
 import regex
 import re
 import uuid
-import os  # Importando a biblioteca os
+import os
+from dotenv import load_dotenv
+
+# Carrega as variáveis de ambiente do arquivo .env (se ele existir)
+load_dotenv()
 
 '''
 Lembrar de pip install regex
 pip install oracledb
+pip install python-dotenv
 '''
 
-# criar (obter) uma conexão com o banco de dados Oracle (FIAP)
+# criar (obter) uma conexão com o banco de dados Oracle
 def getConnection():
     """
     Obtém uma conexão com o banco de dados Oracle usando credenciais
-    das variáveis de ambiente.
+    das variáveis de ambiente (lidas de um arquivo .env localmente).
     """
     try:
-        conn = oracledb.connect(
-            user=os.getenv("DB_USER"),
-            password=os.getenv("DB_PASSWORD"),
-            host=os.getenv("DB_HOST"),
-            port=os.getenv("DB_PORT", "1521"),  # Usa 1521 como porta padrão
-            service_name=os.getenv("DB_SERVICE_NAME")
-        )
+        user = os.getenv("ORACLE_USER")
+        password = os.getenv("ORACLE_PASSWORD")
+        dsn = os.getenv("ORACLE_DSN")
+
+        # Valida se as variáveis de ambiente essenciais foram carregadas
+        if not all([user, password, dsn]):
+            print("Erro: As variáveis de ambiente ORACLE_USER, ORACLE_PASSWORD, e ORACLE_DSN devem ser definidas.")
+            print("Por favor, crie um arquivo .env na raiz do projeto e adicione as credenciais. Veja o README.md para mais detalhes.")
+            return None
+
+        conn = oracledb.connect(user=user, password=password, dsn=dsn)
         print('Conexão com Oracle DB realizada!')
         return conn
     except Exception as e:
@@ -159,6 +168,7 @@ def validar_id():
     """
     return str(uuid.uuid4())
 
+
 def validar_sim_nao(mensagem: str) -> str:
     """
     Solicita uma resposta 's' ou 'n' e a retorna.
@@ -171,7 +181,9 @@ def validar_sim_nao(mensagem: str) -> str:
             print("Opção inválida. Por favor, digite 's' ou 'n'.")
 
 def converter_hora(o):
-    """Converte objetos não serializáveis em JSON, como datetime."""
+    """
+    Converte objetos não serializáveis em JSON, como datetime.
+    """
     if isinstance(o, datetime):
         return o.isoformat()
     raise TypeError(f'O objeto do tipo: {o.__class__.__name__} nao pode ser transportado para Json')
