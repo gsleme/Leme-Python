@@ -3,3 +3,4 @@ oracledb
 gunicorn
 requests
 regex
+python-dotenv
