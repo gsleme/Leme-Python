@@ -107,3 +107,5 @@ Você deverá ver uma saída indicando que todos os testes passaram (`OK`).
 | Felipe Ferrete Lemes                  | RM562999 |
 | Gustavo Bosak Santos                  | RM566315 |
 | Nikolas Henrique de Souza Lemes Brisola | RM564371 |
+
+▶️ **Pitch de Vendas:** *([https://youtu.be/zT3GiHzV1J8] )*
