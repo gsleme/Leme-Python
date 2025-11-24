@@ -1,6 +1,6 @@
 import oracledb
 import json
-from utilitarios import getConnection, validar_string, validar_id, validar_data, validar_float, converter_hora
+from utilitarios import getConnection, validar_string, validar_id, validar_data, validar_float, converter_hora, validar_inteiro
 
 def create_previsao(id_previsao, id_usuario, taxa_sucesso, categoria, data_previsao):
     """Insere uma nova previsão no banco e retorna True em caso de sucesso."""
