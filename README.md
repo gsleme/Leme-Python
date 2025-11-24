@@ -29,6 +29,7 @@ O projeto está organizado da seguinte forma:
 *   **Python 3:** Linguagem de programação principal.
 *   **Flask:** Microframework web para a criação da API.
 *   **Requests:** Biblioteca para realizar as chamadas HTTP nos testes.
+*   **python-dotenv:** Para gerenciamento de variáveis de ambiente em desenvolvimento.
 
 ## Instalação
 
@@ -51,6 +52,21 @@ O projeto está organizado da seguinte forma:
     ```bash
     pip install -r requirements.txt
     ```
+
+## Configuração do Ambiente Local
+
+Para executar o projeto localmente, o sistema precisa das credenciais de acesso ao banco de dados Oracle.
+
+1.  **Crie um arquivo `.env`** na raiz do projeto. Este arquivo não é versionado para proteger suas credenciais.
+
+2.  **Adicione as seguintes variáveis** ao arquivo `.env`, substituindo os valores de exemplo pelas suas credenciais reais:
+    ```env
+    ORACLE_USER=seu_usuario
+    ORACLE_PASSWORD=sua_senha
+    ORACLE_DSN=seu_dsn_oracle
+    ```
+
+O sistema está configurado para ler essas variáveis automaticamente durante a execução.
 
 ## Como Usar
 
